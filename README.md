@@ -1,4 +1,4 @@
-# Calci-kernel
+# Calci-kernel 软件可靠性测试项目  测试人员：薛江涛
 A complex calculation kernel in Java (for Calci calculator)
 
 These are complex-number classes to implement complex calculation.<br/>
