@@ -21,13 +21,30 @@ public class ParseNumberTest{
 	@Test
 	public void parseTest() {
 		
-		//Assert.assertEquals(1.1, ParseNumber.parse("1.1"));
-		Expression expr=new Expression("fzero(eval(1/2+1/(x-1)+2integ(sin(reg*arctan(x))/(1+x^2)^(reg/2)/(exp(2πx)-1),0,∞),reg(x)),14i)");
-		Assert.assertEquals(-1, expr.value().val);
-		/*Assert.assertEquals(true, ParseNumber.isBaseSymbol('₉'));
-		Assert.assertEquals(1.0,ParseNumber.parseCompat("1~2"));
-		Assert.assertEquals(10,ParseNumber.parseCompat("A"));*/
+		try{
+			Assert.assertEquals(10,ParseNumber.parse("1E1"));
+		}
+		catch (Exception e){
+			System.out.println(e);
+		}
+			
+		//Assert.assertEquals(0,ParseNumber.parse("₉"));
+		Assert.assertEquals(2.0,ParseNumber.parse("1₂1"));
+		Assert.assertEquals(2.0,ParseNumber.parse("1₂"));
+		try{
+			Assert.assertEquals(Double.POSITIVE_INFINITY,ParseNumber.parse("inf"));
+		}
+		catch (Exception e){
+			System.out.println(e);
+		}
 		
+		
+		
+		
+	}
+	@Test
+	public void toBaseStringTest() {
+		Assert.assertEquals("1",ParseNumber.toBaseString(2.0, 2, 2));
 	}
 	
 	
