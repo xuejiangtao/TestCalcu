@@ -103,7 +103,7 @@ public class Complex {
 	public static Complex div(Complex a,Complex b){
 		double aNorm=a.norm().re;
 		double bNorm=b.norm().re;
-		if(aNorm>0&&bNorm==0)return Inf; // pInf==nInf in complex field?
+		if(aNorm>0.0&&bNorm==0.0)return Inf; // pInf==nInf in complex field?
 		if(Double.isInfinite(bNorm)&&Complex.isDoubleFinite(aNorm))return new Complex(0);
 		double ure=b.re/bNorm; // prevent overflow on a.re*b.re
 		double uim=b.im/bNorm;

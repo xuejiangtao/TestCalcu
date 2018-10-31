@@ -44,7 +44,7 @@ public class Result{
 		maxPrecision=(int)Math.floor(52*Math.log(2)/Math.log(base_));
 	}
 
-	boolean isFatalError(){
+	public boolean isFatalError(){
 		return err>0;
 	}
 }

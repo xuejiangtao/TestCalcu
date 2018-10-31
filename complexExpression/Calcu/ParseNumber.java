@@ -15,7 +15,7 @@ public class ParseNumber{
 	}
 
 	// get a number digit from char under certain base
-	private static int getDigit(char c,int base) throws NumberFormatException{
+	public static int getDigit(char c,int base) throws NumberFormatException{
 		int digit;
 		if(c>='0'&&c<='9'){ // in base 10
 			digit=c-'0';
@@ -30,7 +30,7 @@ public class ParseNumber{
 		return digit;
 	}
 
-	private static double parseRaw(String s,int base)throws NumberFormatException{
+	public static double parseRaw(String s,int base)throws NumberFormatException{
 		int dotPos;
 		for(dotPos=0;dotPos<s.length();dotPos++){
 			if(s.charAt(dotPos)=='.')
@@ -96,7 +96,7 @@ public class ParseNumber{
 
 	// without scientific display mode
 	private static final String numSymbol="0123456789ABCDEF";
-	private static String toPositiveRawBaseString(double d,long base,int prec){ // d_>0
+	public static String toPositiveRawBaseString(double d,long base,int prec){ // d_>0
 		int[] digits=new int[100];
 		int intDigitNum=(int)Math.floor(Math.log(d)/Math.log(base))+1;
 		if(intDigitNum<0)intDigitNum=0;
@@ -150,7 +150,8 @@ public class ParseNumber{
 
 	// print the value of d under base to a string with prec digits' precision
 	public static String toBaseString(double d_,int base,int prec){
-		if(Double.isNaN(d_))return "nan";
+		if(Double.isNaN(d_))
+			return "nan";
 		if(d_==Double.POSITIVE_INFINITY)return "inf";
 		if(d_==Double.NEGATIVE_INFINITY)return "-inf";
 
