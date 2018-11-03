@@ -3,7 +3,7 @@ package Calcu;
  * Created by Iraka Crow on 2017/3/25.
  */
 
-class Function{
+public class Function{
 
 	// place a function serial here, interval 10 (accept maximum 10 params.)
 

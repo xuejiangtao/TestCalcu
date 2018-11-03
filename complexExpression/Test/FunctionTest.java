@@ -1,5 +1,5 @@
 package Test;
-
+import Calcu.Function;
 import static org.junit.Assert.*;
 
 
@@ -9,6 +9,7 @@ public class FunctionTest {
 
 	@Test
 	public void test() {
+		Function temp1=new Function();
 	}
 
 }

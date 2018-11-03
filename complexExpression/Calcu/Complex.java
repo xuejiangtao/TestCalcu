@@ -9,6 +9,7 @@ import java.lang.Math;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import junit.framework.Assert;
 
 public class Complex {
 	public static Complex E=new Complex(Math.E);
@@ -91,7 +92,7 @@ public class Complex {
 	public boolean isValid(){ // finite complex or Complex Infinity
 		return !(isDoubleFinite(re)&&Double.isNaN(im));
 	}
-
+	//若是nan或者inf返回false 否则返回true
 	public static boolean isDoubleFinite(double d){
 		return !(Double.isNaN(d)||Double.isInfinite(d));
 	}
@@ -103,8 +104,6 @@ public class Complex {
 	public static Complex div(Complex a,Complex b){
 		double aNorm=a.norm().re;
 		double bNorm=b.norm().re;
-		if(aNorm>0.0&&bNorm==0.0)return Inf; // pInf==nInf in complex field?
-		if(Double.isInfinite(bNorm)&&Complex.isDoubleFinite(aNorm))return new Complex(0);
 		double ure=b.re/bNorm; // prevent overflow on a.re*b.re
 		double uim=b.im/bNorm;
 		double re=(a.re*ure+a.im*uim)/bNorm; // prevent overflow on bnorm^2
@@ -118,17 +117,17 @@ public class Complex {
 			else if(b.re<0&&b.im==0)return Complex.Inf;
 			else return new Complex();
 		}
-		if(a.norm().re<1&&b.re==Double.POSITIVE_INFINITY){ // special treatment for inf
+		else if(a.norm().re<1&&b.re==Double.POSITIVE_INFINITY){ // special treatment for inf
 			return new Complex(0);
 		}
-		if(a.norm().re>1&&b.re==Double.NEGATIVE_INFINITY){ // special treatment for -inf
+		else if(a.norm().re>1&&b.re==Double.NEGATIVE_INFINITY){ // special treatment for -inf
 			return new Complex(0);
 		}
 
 		return Complex.exp(Complex.mul(b,Complex.ln(a)));
 	}
 
-	private static String doubleToString(double d){
+	public static String doubleToString(double d){
 		if(Double.isNaN(d)){
 			return "nan";
 		}
@@ -143,16 +142,16 @@ public class Complex {
 		else{
 			return Double.toString(d);
 		}*/
-		if(Result.base==10&&Result.precision==Result.maxPrecision){
-			return Double.toString(d);
-		}
+		
 
 		return ParseNumber.toBaseString(d,Result.base,Result.precision);
 	}
 
 	public String toString(){ // kind of slow !!!
 		String s="";
-		double threshold=(Result.precision<Result.maxPrecision?Math.pow(Result.base,-Result.precision):0);
+		double threshold=Math.pow(Result.base,-Result.precision);
+		System.out.println(String.valueOf(Math.abs(re)>threshold));
+		System.out.println(String.valueOf(Double.isNaN(re)));
 		if(Double.isNaN(im)&&Double.isInfinite(re)){
 			s=(re>0?"∞":"-∞");
 		}
@@ -169,14 +168,30 @@ public class Complex {
 				}
 			}
 			else{ // inf or nan
-				s+=(im<0?"":"+"); // +inf/nan -> +
+				//s+=(im<0?"":"+"); // +inf/nan -> +
+				if(im < 0)
+				{
+					s+="";
+				}
+				else
+				{
+					s+="+";
+				}
 				s+=doubleToString(im)+"*i";
 			}
 		}
 		else{
 			if(isDoubleFinite(im)){
 				if(Math.abs(im)>threshold){
-					s+=(im>0?"":"-");
+					//s+=(im>0?"":"-");
+					if(im > 0)
+					{
+						s+="";
+					}
+					else
+					{
+						s+="-";
+					}
 					if(Math.abs(Math.abs(im)-1)>threshold){
 						s+=doubleToString(Math.abs(im));
 					}
@@ -212,7 +227,9 @@ public class Complex {
 		double cosArg=c.re/norm; // invalid for 0
 		double sind2=Math.sqrt((1-cosArg)/2);
 		double cosd2=Math.sqrt((1+cosArg)/2);
-		if(c.im<0)sind2=-sind2;
+		if(c.im<0) {
+			sind2=-sind2;
+		}
 		norm=Math.sqrt(norm);
 		return new Complex(norm*cosd2,norm*sind2);
 	}
@@ -239,9 +256,6 @@ public class Complex {
 		double sinhi2=(eip2-ein2)/2;
 		double coshi2=(eip2+ein2)/2;
 
-		if(Double.isInfinite(coshi2)){ // Special case
-			return new Complex(0,c.im>0?1:-1);
-		}
 
 		double ratio=Math.cos(re2)+coshi2;
 		double resRe=Math.sin(re2)/ratio;
@@ -260,8 +274,10 @@ public class Complex {
 	}
 
 	public static Complex arctan(Complex c){
-		if(c.re==Double.POSITIVE_INFINITY)return new Complex(Math.PI/2);
-		if(c.re==Double.NEGATIVE_INFINITY)return new Complex(Math.PI/2);
+		if(c.re==Double.POSITIVE_INFINITY)
+			return new Complex(Math.PI/2);
+		if(c.re==Double.NEGATIVE_INFINITY)
+			return new Complex(Math.PI/2);
 		/*Complex v1=Complex.ln(Complex.sub(new Complex(1),Complex.mul(c,I)));
 		Complex v2=Complex.ln(Complex.add(new Complex(1),Complex.mul(c,I)));
 		return Complex.mul(new Complex(0,0.5),Complex.sub(v1,v2));*/ // Old implementation
@@ -273,12 +289,12 @@ public class Complex {
 		return new Complex(re_,im_);
 	}
 
-	private static double[] gammaP={ // constants for Lanczos approximation
+	public static double[] gammaP={ // constants for Lanczos approximation
 		676.5203681218851,-1259.1392167224028,771.32342877765313,
 		-176.61502916214059,12.507343278686905,-0.13857109526572012,
 		9.9843695780195716E-6,1.5056327351493116E-7
 	};
-	private static double[] gammaT={ // constants for Taylor approximation
+	public static double[] gammaT={ // constants for Taylor approximation
 		-0.57721566490153286,0.9890559953279725,0.9074790760808862,
 		0.9817280868344002,0.9819950689031453,0.9931491146212761
 	};
@@ -307,6 +323,7 @@ public class Complex {
 		else if(c.re<-0.5){ // negative x complex plane
 			int k=(int)Math.floor(-c.re)+1;
 			result=Complex.gamma(new Complex(c.re+k,c.im));
+			//必进循环，没有办法避免
 			for(int i=k-1;i>=0;i--){ // reversed order, prevent 0/0 -> NaN
 				if(!result.isFinite())break;
 				result=Complex.div(result,new Complex(c.re+i,c.im));
